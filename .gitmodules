@@ -1,0 +1,9 @@
+[submodule "Booksim_custom_traffic"]
+	path = Booksim_custom_traffic
+	url = /Booksim_custom_traffic/
+[submodule "gem5"]
+	path = gem5
+	url = /gem5/
+[submodule "booksim2"]
+	path = booksim2
+	url = /booksim2/

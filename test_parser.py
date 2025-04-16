@@ -1,7 +1,7 @@
 import re
 
-input_file = "../gem5/m5out/debug.log"
-output_file = "DNNMark_trace.txt"
+input_file = "temp.txt"
+output_file = "parser_tests.txt"
 
 CONTROL_SIZE = 8
 DATA_SIZE = 64
@@ -77,6 +77,7 @@ with open(input_file, "r") as infile, open(output_file, "w") as outfile:
                         dst = i
                         outfile.write(f"{delay} {src} {dst} {type_id}\n")
                         # print(f"delay: {delay}, src: {src}, dst: {dst}, msg_size: {msg_size}, type_id: {type_id}")
+
 print("=== Node ID Mapping ===")
 print(sender_to_netdest)
 

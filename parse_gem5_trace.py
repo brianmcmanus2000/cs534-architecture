@@ -13,22 +13,50 @@ netdest_pattern = re.compile(r'Destination\s*=\s*\[NetDest\s*\(\d+\)\s+([^\]]+)\
 msgsize_pattern = re.compile(r'MessageSize\s*=\s*(\w+)')
 requestor_pattern = re.compile(r'Requestor\s*=\s*([\w-]+)')
 
-sender_to_netdest = {
-    "Directory-0": 4,
-    "CorePair-0": 12,
-    "CorePair-1": 13,
-    "TCP-0": 15,
-    "TCP-1": 16,
-    "TCP-2": 17,
-    "TCP-3": 18,
-    "DMA-0": 20,
-    "TCC-0": 23,
-    "DMA-1": 24,  # Optional
-    "SQC-0": None,  # No destination role seen
-    "SQC-1": None,
-    "L3Cache-0": None,
-    "NULL-0": None
-} 
+# sender_to_netdest = {
+#     "Directory-0": 4,
+#     "CorePair-0": 12,
+#     "CorePair-1": 13,
+#     "TCP-0": 15,
+#     "TCP-1": 16,
+#     "TCP-2": 17,
+#     "TCP-3": 18,
+#     "DMA-0": 20,
+#     "TCC-0": 23,
+#     "DMA-1": 24,  
+#     "SQC-0": None,
+#     "SQC-1": None,
+#     "L3Cache-0": None,
+#     "NULL-0": None
+# } 
+
+booksim_src_mapping={
+        "Directory-0": 1,
+        "CorePair-0": 2,
+        "CorePair-1": 3,
+        "TCP-0": 4,
+        "TCP-1": 5,
+        "TCP-2": 6,
+        "TCP-3": 7,
+        "TCC-0": 8,
+        "SQC-0": 9,
+        "SQC-1": 10,
+        "L3Cache-0": 11,
+        "NULL-0": 12
+}
+booksim_dst_mapping={
+    4:1,
+    12:2,
+    13:3,
+    15:4,
+    16:5,
+    17:6,
+    18:7,
+    20:9,
+    23:8,
+    24:10
+}
+
 
 with open(input_file, "r") as infile:
     for line in infile:
@@ -63,22 +91,20 @@ with open(input_file, "r") as infile, open(output_file, "w") as outfile:
 
             msgsize_match = msgsize_pattern.search(line)
             msg_size = msgsize_match.group(1).lower() if msgsize_match else "" #get the message size
-            
 
-            # print(f"timestamp: {msg_time}, message size: {msg_size}, sender: {sender},")
-            # delay = (msg_time - first_timestamp) // 1000
-            delay = msg_time
-            src = sender_to_netdest[sender]
+            delay = (msg_time - first_timestamp) // 1000
+
+            src = booksim_src_mapping[sender]
             size = DATA_SIZE if "data" in msg_size.lower() else CONTROL_SIZE
             type_id = 1 if size == DATA_SIZE else 0
             if(src!=None):
                 for i, val in enumerate(netdest_raw):
                     if val == '1':
-                        dst = i
+                        dst = booksim_dst_mapping[i]
                         outfile.write(f"{delay} {src} {dst} {type_id}\n")
                         # print(f"delay: {delay}, src: {src}, dst: {dst}, msg_size: {msg_size}, type_id: {type_id}")
 print("=== Node ID Mapping ===")
-print(sender_to_netdest)
+print(booksim_src_mapping)
 
 print("\n=== Message Type Mapping ===")
 print("0: Control, size=8")

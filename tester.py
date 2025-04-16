@@ -1,6 +1,6 @@
 import re
 
-input_file = "m5out/debug.log"  # or whatever path you're using
+input_file = "../gem5/m5out/debug.log"  # or whatever path you're using
 
 # Match lines like:
 # Message: [ResponseMsg: addr = ...
@@ -18,21 +18,23 @@ with open(input_file, "r") as infile:
         if match:
             netdest_match = netdest_pattern.search(line)
             netdest_raw = netdest_match.group(1).strip().split()
-            # sender_match = sender_pattern.search(line)
-            # if sender_match:
-            #     sender = sender_match.group(1)
-            # else: #sometimes there is no sender field but there is a requestor field, so we use that if possible
-            #     requestor_match = requestor_pattern.search(line)
-            #     if requestor_match:
-            #         sender = requestor_match.group(1)
-            #     else:
-            #         sender = "UNKNOWN"
-            for i, val in enumerate(netdest_raw):
-                # print(netdest_raw)
-                # print(i)
-                # print(val)
-                if val == '1':
-                    counter[i]+=1
+            sender_match = sender_pattern.search(line)
+            if sender_match:
+                sender = sender_match.group(1)
+            else: #sometimes there is no sender field but there is a requestor field, so we use that if possible
+                requestor_match = requestor_pattern.search(line)
+                if requestor_match:
+                    sender = requestor_match.group(1)
+                else:
+                    sender = "UNKNOWN"
+            if(sender=="L3Cache-0"):
+                print(line)
+            # for i, val in enumerate(netdest_raw):
+            #     # print(netdest_raw)
+            #     # print(i)
+            #     # print(val)
+            #     if val == '1':
+            #         counter[i]+=1
 print(counter)
 
 # with open(input_file, "r") as infile:
